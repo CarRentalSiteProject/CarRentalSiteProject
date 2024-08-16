@@ -13,39 +13,85 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MemberDao {
-	
-	private static final String jdbcurl = "jdbc:mysql://localhost:3306/member";
-    private static final String id = "root";
-    private static final String paswd = "382466";
-    
-    public MemberDao() {
-    	try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public String get(String key) {
-        String value = null;
-        String query = "SELECT password FROM member WHERE username = ?";
 
-        try (Connection connection = DriverManager.getConnection(jdbcurl, id, paswd);
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            
-            statement.setString(1, key);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    value = resultSet.getString("password");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	void getMemberByID(int mbID) {
+		Connection connect = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connect = SQLTest.getConnection();
+			preparedStatement = connect.prepareStatement("select * from member where getMemberByID=?");
+			// 從1開始
+			preparedStatement.setInt(1, mbID);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				// It is possible to get the columns via name
+				// also possible to get the columns via the column number
+				// which starts at 1
+				// e.g. resultSet.getString(3);
+				int id = resultSet.getInt("MemberID");
+				String name = resultSet.getString("Username");
+				String password = resultSet.getString("Password");
 
-        return value;
-    }
-	
+				System.out.println("ID: " + id);
+				System.out.println("Name: " + name);
+				System.out.println("Name: " + password);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (resultSet != null) {
+					resultSet.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if (connect != null) {
+					connect.close();
+				}
+			} catch (SQLException e) {
+
+			}
+		}
+	}
+
+	public boolean validateLogin(String username, String password) {
+		Connection connect = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		boolean isValid = false;
+		try {
+			connect = SQLTest.getConnection();
+			preparedStatement = connect.prepareStatement("select * from member where Username=? and Password=?");
+			preparedStatement.setString(1, username);
+			preparedStatement.setString(2, password);
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				isValid = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (resultSet != null) {
+					resultSet.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if (connect != null) {
+					connect.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return isValid;
+	}
+}
+
 //	Map<String, String> data = new HashMap<>();
 //	public MemberDao() {
 //		data.put("tom", "1234");
@@ -55,5 +101,3 @@ public class MemberDao {
 //	public String get(String key) {
 //		return data.get(key);
 //	}
-
-}
