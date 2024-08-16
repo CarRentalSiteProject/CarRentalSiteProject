@@ -25,7 +25,7 @@
             color: white;
         }
     </style>
-    <script src="login.js"></script>
+<!--     <script src="login.js"></script> -->
     <title>Log in</title>
 </head>
 
@@ -34,7 +34,7 @@
         <nav class="navbar navbar-dark navbar-expand-lg shadow-none">
             <div class="container">
                 <a class="align-items-center d-inline-flex fw-bold h4 mb-0 navbar-brand text-primary text-uppercase"
-                    href="index.html"> <svg version="1.0" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+                    href="index.jsp"> <svg version="1.0" xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
                         viewBox="0 0 100 100" width="2.5em" height="2.5em" class="me-1" fill="currentColor">
                         <path
                             d="M38.333 80a11.571 11.571 0 0 1-7.646-2.883A11.724 11.724 0 0 1 26.834 70H10V46.667L43.333 40l20-20H90v26.667H43.995l-27.328 5.465v11.2h11.166a11.787 11.787 0 0 1 4.212-4.807 11.563 11.563 0 0 1 12.577 0 11.789 11.789 0 0 1 4.213 4.807h7.833V70h-6.837a11.719 11.719 0 0 1-3.853 7.117A11.571 11.571 0 0 1 38.333 80Zm0-16.667a5 5 0 1 0 5 5 5.006 5.006 0 0 0-5.001-5Zm27.761-36.666L52.762 40h30.571V26.667Z" />
@@ -51,7 +51,7 @@
                 <div class="collapse navbar-collapse " id="navbarNavDropdown-2">
                     <ul class="me-auto navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link p-lg-3" href="index.html">Home</a>
+                            <a class="nav-link p-lg-3" href="index.jsp">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link p-lg-3" href="#">Offers</a>
@@ -77,39 +77,37 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="mt-5 pt-5 row">
                             <div class="login-form">
-                                <form onsubmit="validateLogin(event)">
+                            ${mes}
+                                <form action="login" method="post" > 
+<!--                                 onsubmit="validateLogin(event)" -->
                                     <h1 class="display-3 fw-bold mb-4 text-white"><span class="text-primary">Log
                                             in</span>
                                     </h1>
                                     <!-- <h2 class="text-center">Log in</h2> -->
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="username"
-                                            placeholder="Username" required="required">
+                                        <input type="text" class="form-control" name="Username"
+                                            placeholder="Username" value="${param.Username}" required="required">
                                         <!-- <input type="text" class="form-control" placeholder="電話號碼/使用者名稱/Email" required="required"> -->
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control" id="password" placeholder="password"
-                                            required="required">
+                                        <input type="password" class="form-control" name="Password" placeholder="password"
+                                           value="${param.Password}" required="required">
                                         <!-- <input type="password" class="form-control" placeholder="密碼" required="required"> -->
                                     </div>
                                     <div class="card-group">
                                         <button type="submit" class="btn btn-primary btn-block">Log in</button>
                                     </div>
-                                    <div class="form-group text-center">
-                                        <a href="#">Forget password</a>
-                                    </div>
+                                    
                                     <!-- <div class="form-group text-center">
                             <a href="#" class="btn btn-primary btn-block">使用簡訊登入</a>
                         </div> -->
-                                    <div class="form-group text-center">
-                                        or
-                                    </div>
+                                    
                                     <!-- <div class="form-group text-center">
                             <button type="button" class="btn btn-outline-primary">Facebook</button>
                             <button type="button" class="btn btn-outline-primary">Google</button>
                         </div> -->
                                     <div class="form-group text-center">
-                                        New friend？ <a href="#">Sign up</a>
+                                        New friend?<a href="#">Sign up</a>
                                     </div>
                                 </form>
                             </div>

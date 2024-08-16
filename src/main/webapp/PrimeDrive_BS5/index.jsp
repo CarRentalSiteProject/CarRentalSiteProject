@@ -45,7 +45,7 @@
                             </li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 py-1"> 
-                            <a href="login.html" class="btn btn-outline-primary pe-4 ps-4">Log In</a>
+                            <a href="login.jsp" class="btn btn-outline-primary pe-4 ps-4">Log In</a>
                             <a href="#" class="btn btn-primary pe-4 ps-4">Sign Up</a> 
                         </div>                         
                     </div>                     
