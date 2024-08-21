@@ -1,4 +1,4 @@
-package com.tcg.action;
+package fortestDBconn;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import vo.CarVo;
 
 @Repository
-public class CarDAO {
+public class CarDAO { 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 

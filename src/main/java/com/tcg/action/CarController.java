@@ -1,47 +1,44 @@
 package com.tcg.action;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import vo.CarVo;
 
-@Controller
-public class CarController {
-    @Autowired
-    private CarDAO carDAO;
-    
-    @GetMapping("/intputanything")
-    public String intpage() {
-    	return "cart";
+@WebServlet("/searchCar")
+public class CarController extends HttpServlet {
+    private TestConn testConn;
+
+    @Override
+    public void init() throws ServletException {
+        AppConfig appConfig = new AppConfig();
+        this.testConn = new TestConn(appConfig);
     }
 
-    @GetMapping("/x")
-    public String showCarsPage(Model model) {
-        List<CarVo> cars = carDAO.getAllCars();
-        model.addAttribute("cars", cars);
-        return "cars"; 
-    }
-    @PostMapping("/carcart")
-    public String getCarByName(
-            @RequestParam("forcar") String carType,
-            Model m) throws SQLException {
-        
-        // 調用服務層方法來查詢車型
-        List<CarVo> car = carDAO.getCarByName(carType);
-        
-        // 將結果添加到模型中
-        m.addAttribute("carList", car);
-        
-        // 返回 JSP 頁面名稱
-        return "respCar";
-    }
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String carType = request.getParameter("forcar");
 
+        try {
+            List<CarVo> cars = testConn.getCarByName(carType);
+            request.setAttribute("cars", cars);
+            request.getRequestDispatcher("respCar.jsp").forward(request, response);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
+        }
+        
+    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // 始終使用 doGet 來處理 POST 請求
+        doGet(request, response);
+    }
 }

@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<form action="carcart" method="post">
+<form action="searchCar" method="post">
 		<p>輸入日期</p>
 		<input type="date" name = "fordate" /><br>
 		<P>輸入車型</P>

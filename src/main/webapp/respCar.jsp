@@ -11,7 +11,7 @@
 <h2>搜尋結果</h2>
 
 <%
-    List<CarVo> carList = (List<CarVo>) request.getAttribute("carList");
+    List<CarVo> carList = (List<CarVo>) request.getAttribute("cars");
     if (carList != null && !carList.isEmpty()) {
 %>
         <table border="1">
