@@ -19,7 +19,7 @@ public class MemberDao {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			connect = SQLTest.getConnection();
+			connect = SQLConnection.getConnection();
 			preparedStatement = connect.prepareStatement("select * from member where getMemberByID=?");
 			// 從1開始
 			preparedStatement.setInt(1, mbID);
@@ -63,7 +63,7 @@ public class MemberDao {
 		ResultSet resultSet = null;
 		boolean isValid = false;
 		try {
-			connect = SQLTest.getConnection();
+			connect = SQLConnection.getConnection();
 			preparedStatement = connect.prepareStatement("select * from member where Username=? and Password=?");
 			preparedStatement.setString(1, username);
 			preparedStatement.setString(2, password);
