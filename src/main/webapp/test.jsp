@@ -1,6 +1,11 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
-    <head>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -63,60 +68,61 @@
                             <h1><span class="display-3 fw-bold mb-4 text-primary">Sign </span><span class="text-white">Up</span></h1>
                             <div class="bg-white p-4">
                                 <h2 class="fw-bold h5 mb-3 text-dark">Create an Account</h2>
-                                <form role="form" onsubmit="validateForm(event)" action="index.html" method="get"> 
-                                    <div class="align-items-center gx-2 gy-3 row">
-                                        <div class="col-6"> 
-                                            <label class="text-primary">Name: </label>
-                                            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="姓名"> 
-                                        </div>
-                                        <div class="col-6"> 
-                                            <label class="text-primary">Age: </label>
-                                            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="年齡"> 
-                                        </div>
-                                        <div class="col-6"> 
-                                            <label class="text-primary">Gender: </label>
-                                                <div class="text-primary">
-                                                    <input id="genderMale" type="radio" name="gender" value="male" class="form-check-input">
-                                                    <label class="form-check-label" for="genderMale">Male</label>
-                                                </div>
-                                                <div class="text-primary">
-                                                    <input id="genderFemale" type="radio" name="gender" value="female" class="form-check-input">
-                                                    <label class="form-check-label" for="genderFemale">Female</label>
-                                                </div>
-                                                <div class="text-primary">
-                                                    <input id="genderOther" type="radio" name="gender" value="other" class="form-check-input">
-                                                    <label class="form-check-label" for="genderOther">Other</label>
-                                                </div>
-                                        </div>
-                                        <div class="col-6"> 
-                                            <label class="text-primary">Phone: </label>
-                                            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="手機"> 
-                                        </div>
-                                        <div class="col-12"> 
-                                            <label class="text-primary">Email: </label>
-                                            <input type="email" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="信箱"> 
-                                        </div>
-                                        <div class="col-6"> 
-                                            <label class="text-primary">Password: </label>
-                                            <input type="password" id="password" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="密碼"> 
-                                        </div>
-                                        <div class="col-6"> 
-                                            <label class="text-primary">Confirm Password: </label>
-                                            <input type="password" id="confirmPassword" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="確認密碼"> 
-                                        </div>
-                                        <div class="col-12"> 
-                                            <label class="text-primary">Address: </label>
-                                            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="地址"> 
-                                        </div>
-                                        <div class="col-6"> 
-                                            <label class="text-primary">License Number: </label>
-                                            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" placeholder="駕照號"> 
-                                        </div>
-                                        <div class="col-12 text-end"> 
-                                            <button type="submit" class="btn btn-primary pb-2 pe-4 ps-4 pt-2">Create</button>                                             
-                                        </div>
-                                    </div>                                     
-                                </form>
+								<form role="form" onsubmit="validateForm(event)" action="registerMember" method="post"> 
+								    <div class="align-items-center gx-2 gy-3 row">
+								        <div class="col-6"> 
+								            <label class="text-primary">Name: </label>
+								            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="name" placeholder="Tom"> 
+								        </div>
+								        <div class="col-6"> 
+								            <label class="text-primary">Age: </label>
+								            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="age" placeholder="18"> 
+								        </div>
+								        <div class="col-6"> 
+								            <label class="text-primary">Gender: </label>
+								            <div class="text-primary">
+								                <input id="genderMale" type="radio" name="gender" value="male" class="form-check-input">
+								                <label class="form-check-label" for="genderMale">Male</label>
+								            </div>
+								            <div class="text-primary">
+								                <input id="genderFemale" type="radio" name="gender" value="female" class="form-check-input">
+								                <label class="form-check-label" for="genderFemale">Female</label>
+								            </div>
+								            <div class="text-primary">
+								                <input id="genderOther" type="radio" name="gender" value="other" class="form-check-input">
+								                <label class="form-check-label" for="genderOther">Other</label>
+								            </div>
+								        </div>
+								        <div class="col-6"> 
+								            <label class="text-primary">Phone: </label>
+								            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="phone" placeholder="09XX-XXX-XXX"> 
+								        </div>
+								        <div class="col-12"> 
+								            <label class="text-primary">Email: </label>
+								            <input type="email" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="email" placeholder="tom@test.com"> 
+								        </div>
+								        <div class="col-6"> 
+								            <label class="text-primary">Password: </label>
+								            <input type="password" id="password" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="password"> 
+								        </div>
+								        <div class="col-6"> 
+								            <label class="text-primary">Confirm Password: </label>
+								            <input type="password" id="confirmPassword" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="confirmPassword"> 
+								        </div>
+								        <div class="col-12"> 
+								            <label class="text-primary">Address: </label>
+								            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="address" placeholder="Taipei"> 
+								        </div>
+								        <div class="col-6"> 
+								            <label class="text-primary">License Number: </label>
+								            <input type="text" class="form-control pb-2 pe-3 ps-3 pt-2 rounded-0" name="licenseNub" placeholder="A1XXXXXXXX"> 
+								        </div>
+								        <div class="col-12 text-end"> 
+								            <button type="submit" class="btn btn-primary pb-2 pe-4 ps-4 pt-2">Create</button>                                             
+								        </div>
+								    </div>
+								</form>
+
                             </div>
                         </div>
                     </div>
@@ -261,3 +267,4 @@
                 </div>                     
             </div>                 
         </footer>
+</html>
