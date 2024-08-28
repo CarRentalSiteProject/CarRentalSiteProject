@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>可用車輛</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>可用車輛</h1>
+    <form action="order2" method="post">
+    <p>取車日期 : <span id="chdate"></span></p><br/>
+    <input type="hidden" name="chdate" id="chdateInput">
+    <p>還車日期 : <span id="redate"></span></p>
+    <input type="hidden" name="redate" id="redateInput">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>選擇</th>
+                <th>車型</th>
+                <th>地點</th>
+                <th>價格</th>
+                <th>可容納人數</th>
+            </tr>
+        </thead>
+        <tbody id="carList">
+            <!-- 車輛列表將通過 JavaScript 動態填充 -->
+        </tbody>
+    </table>
+    <button type="submit">提交訂單</button>
+    </form>
+
+    <script>
+    // 這裡需要添加 JavaScript 代碼來動態填充數據
+    // 例如：
+    document.addEventListener('DOMContentLoaded', function() {
+        // 假設我們從某個 API 獲取了車輛數據
+        const cars = [
+            { CarID: 1, CarType: "轎車", C_Location: "台北", Price: 1000, PeopleNub: 4 },
+            { CarID: 2, CarType: "休旅車", C_Location: "高雄", Price: 1500, PeopleNub: 7 }
+        ];
+
+        const carList = document.getElementById('carList');
+        cars.forEach(car => {
+            const row = `
+                <tr>
+                    <td><input type="radio" name="selectedCar" value="${car.CarID}"></td>
+                    <td>${car.CarType}</td>
+                    <td>${car.C_Location}</td>
+                    <td>${car.Price}</td>
+                    <td>${car.PeopleNub}</td>
+                </tr>
+            `;
+            carList.innerHTML += row;
+        });
+
+        // 設置日期
+        document.getElementById('chdate').textContent = "2024-03-01"; // 示例日期
+        document.getElementById('redate').textContent = "2024-03-05"; // 示例日期
+        document.getElementById('chdateInput').value = "2024-03-01";
+        document.getElementById('redateInput').value = "2024-03-05";
+    });
+    </script>
+    <script src="/static/menu.js"></script>
+</body>
+</html>

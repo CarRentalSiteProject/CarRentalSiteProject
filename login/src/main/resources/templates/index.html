@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主頁</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>歡迎來到主頁</h1>
+    <div id="userInfo">
+        <p>您尚未登錄。</p>
+        <a href="/login">登錄</a> | <a href="/signup">註冊</a> 
+    </div>
+
+    <div id="content" style="display:none;">
+        <h2>用戶資訊</h2>
+        <p>用戶名：<span id="username"></span></p>
+        <button id="logoutBtn">登出</button>
+    </div>
+    | <a href="/menu">menu</a>
+    
+    <script src="/static/index.js"></script>
+</body>
+</html>
