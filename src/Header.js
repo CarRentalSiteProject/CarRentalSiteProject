@@ -1,6 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+
 
 function Header() {
+    const { token, username, logout } = useAuth();
     return (
         <div>
             <header className="bg-dark">
@@ -37,8 +41,17 @@ function Header() {
                                 </li>
                             </ul>
                             <div className="d-flex flex-wrap gap-2 py-1"> 
-                                <a href="#" className="btn btn-outline-primary pe-4 ps-4">Log In</a>
-                                <a href="#" className="btn btn-primary pe-4 ps-4">Sign Up</a> 
+                            {token ? (
+                                <>
+                                    <span className="btn btn-outline-primary pe-4 ps-4"><img src="/public/user.png"  className="me-2" style={{width: '20px', height: '20px'}} />{username}</span>
+                                    <button onClick={logout} className="btn btn-primary pe-4 ps-4">登出</button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link to="/login" className="btn btn-outline-primary pe-4 ps-4">登入</Link>
+                                    <Link to="/signup" className="btn btn-primary pe-4 ps-4">註冊</Link>
+                                </>
+                            )} 
                             </div>                         
                         </div>                     
                     </div>                 
