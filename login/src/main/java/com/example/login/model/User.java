@@ -22,12 +22,16 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private boolean isLoggedIn = false;
+
     // 構造函數
     public User() {}
 
-    public User(String username, String password) {
+    public User(String username, String password, boolean isLoggedIn) {
         this.username = username;
         this.password = password;
+        this.isLoggedIn = false;
     }
 
     // Getter 和 Setter 方法
@@ -51,6 +55,14 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

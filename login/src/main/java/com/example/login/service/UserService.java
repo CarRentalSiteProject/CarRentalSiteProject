@@ -26,19 +26,28 @@ public class UserService {
          }
          // 創建新的 User 實例
          String encodedPassword = passwordEncoder.encode(password);
-         User newUser = new User(username, encodedPassword);
+         User newUser = new User(username, encodedPassword, true);
     return userRepository.save(newUser);
      }
 
      public User loginUser(String username, String password) {
         User user = userRepository.findByUsername(username);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return user;
+            user.setLoggedIn(true);
+            return userRepository.save(user);
         }
         return null;
     }
 
     public Optional<User> findByUsername(String username) {
         return Optional.ofNullable(userRepository.findByUsername(username));
+    }
+
+    public void logoutUser(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            user.setLoggedIn(false);
+            userRepository.save(user);
+        }
     }
 }

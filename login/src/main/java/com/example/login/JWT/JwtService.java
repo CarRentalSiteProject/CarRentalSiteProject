@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -55,7 +57,8 @@ public class JwtService {
     // 驗證JWT的有效性
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token) && !isTokenBlacklisted(token);
+
     }
 
     // 檢查JWT是否過期
@@ -83,5 +86,15 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);  // 解碼BASE64編碼的密鑰
         return Keys.hmacShaKeyFor(keyBytes);  // 創建HMAC-SHA密鑰
+    }
+
+    private Set<String> blacklistedTokens = new HashSet<>();
+
+    public void invalidateToken(String token) {
+        blacklistedTokens.add(token);
+    }
+
+    public boolean isTokenBlacklisted(String token) {
+        return blacklistedTokens.contains(token);
     }
 }

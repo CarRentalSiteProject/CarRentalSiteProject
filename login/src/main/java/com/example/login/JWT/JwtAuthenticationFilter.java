@@ -67,6 +67,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // 設置認證信息
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
+            if (jwtService.isTokenBlacklisted(jwt)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
         // 繼續過濾鏈
         filterChain.doFilter(request, response);

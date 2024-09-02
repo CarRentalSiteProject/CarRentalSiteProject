@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.login.JWT.JwtService;
@@ -23,7 +25,8 @@ import com.example.login.model.User;
 import com.example.login.service.UserService;
 
 // 標記這是一個控制器
-@Controller
+@RestController
+@RequestMapping("/api")
 public class SignupController {
 
     // 創建日誌記錄器，用於記錄控制器的操作
@@ -74,6 +77,7 @@ public class SignupController {
     // 處理 POST 請求 "/login"，處理用戶登錄
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        logger.info("Received login request for user: {}", loginRequest.getUsername());
         try {
             // 查找用戶
             Optional<User> userOptional = userService.findByUsername(loginRequest.getUsername());
@@ -101,17 +105,25 @@ public class SignupController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwtToken = token.substring(7);
+            String username = jwtService.extractUsername(jwtToken);
+            userService.logoutUser(username);
+            jwtService.invalidateToken(jwtToken);
+            return ResponseEntity.ok().body("登出成功");
+    }
+    return ResponseEntity.badRequest().body("無效的 token");
+}
+
     // 處理 GET 請求 "/index"，返回首頁
     @GetMapping("/index")
     public String index() {
         return "index";
     }
 
-    // 處理 GET 請求 "/menu"，返回菜單頁面
-    @GetMapping("/menu")
-    public String menu() {
-        return "menu";
-    }
+    
 
     // 處理 GET 請求 "/api/validate-token"，驗證 JWT token
     @GetMapping("/api/validate-token")
@@ -120,11 +132,6 @@ public class SignupController {
         return ResponseEntity.ok().build();
     }
 
-    // 處理 GET 請求 "/test"，返回測試頁面
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
 
     // 內部類，用於返回 JWT token 和用戶名
     private static class AuthResponse {
