@@ -3,29 +3,42 @@ package com.example.CarRentTest.vo;
 public class loginMemberVo {
 	
 	int MemberID;
-	String Username;
-	String Password;
+	String email;
+	String phone;
+	String password;
 	public int getMemberID() {
 		return MemberID;
 	}
 	public void setMemberID(int memberID) {
 		MemberID = memberID;
 	}
-	public String getUsername() {
-		return Username;
+	
+	public String getEmail() {
+		return email;
 	}
-	public void setUsername(String username) {
-		Username = username;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	public String getPassword() {
-		return Password;
+		return password;
 	}
 	public void setPassword(String password) {
-		Password = password;
+		this.password = password;
 	}
 	@Override
 	public String toString() {
-		return "MemberVo [MemberID=" + MemberID + ", Username=" + Username + ", Password=" + Password
+		
+		// 決定使用 email 還是 phone 作為 Username 顯示
+	    String username = (email != null && !email.isEmpty()) ? email : phone;
+		
+		return "MemberVo [MemberID=" + MemberID + ", Username=" + username + ", Password=" + password
 				+ "]";
 	}
 
