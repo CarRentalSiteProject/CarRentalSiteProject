@@ -1,10 +1,24 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import { logout } from './api';    
+
+
+
+
 
 
 function Header() {
-    const { token, username, logout } = useAuth();
+    const {user} = useAuth();
+    const navigate = useNavigate();
+    const handleLogout = async () => {
+        try {
+          await logout();
+          // 登出後重定向到首頁或登錄頁
+        } catch (error) {
+          console.error('登出失敗:', error);
+        }
+      };
     return (
         <div>
             <header className="bg-dark">
@@ -41,10 +55,13 @@ function Header() {
                                 </li>
                             </ul>
                             <div className="d-flex flex-wrap gap-2 py-1"> 
-                            {token ? (
+                            {user ? (
                                 <>
-                                    <span className="btn btn-outline-primary pe-4 ps-4"><img src="/public/user.png"  className="me-2" style={{width: '20px', height: '20px'}} />{username}</span>
-                                    <button onClick={logout} className="btn btn-primary pe-4 ps-4">登出</button>
+                                    <span className="btn btn-outline-primary pe-4 ps-4">
+                                        <img src="/user.png" className="me-2" style={{width: '20px', height: '20px'}} />
+                                        {user.username}
+                                    </span>
+                                    <button onClick={handleLogout} className="btn btn-primary pe-4 ps-4">登出</button>
                                 </>
                             ) : (
                                 <>

@@ -1,36 +1,40 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
+import { validateToken } from './api';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [username, setUsername] = useState(localStorage.getItem('username'));
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token);
-    } else {
-      localStorage.removeItem('token');
-    }
-    if(username) {
-      localStorage.setItem('username', username);
-    } else {
-      localStorage.removeItem('username');
-    }
-  }, [token, username]);
-
-  const login = (newToken, newUsername) => {
-    setToken(newToken);
-    setUsername(newUsername);
+  const login = (userData) => {
+    setUser(userData);
   };
 
   const logout = () => {
-    setToken(null);
-    setUsername(null);
+    setUser(null);
+  };
+
+  const checkAuth = async () => {
+    try {
+      const isValid = await validateToken();
+      if (isValid) {
+        // 如果 token 有效，可以從後端獲取用戶信息
+        // 這裡假設 validateToken 返回用戶信息
+        setUser(isValid);
+        return true;
+      } else {
+        setUser(null);
+        return false;
+      }
+    } catch (error) {
+      console.error('驗證失敗:', error);
+      setUser(null);
+      return false;
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ token,username, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
