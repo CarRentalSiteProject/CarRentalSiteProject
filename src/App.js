@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Header from './Header';
 import MainContent from './MainContent';
 import Login from './login';
+import Signup from './Signup.js';
 import { AuthProvider, useAuth } from './AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
@@ -22,6 +23,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<MainContent />} />
         </Routes>
       </div>

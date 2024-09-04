@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { useAuth } from './AuthContext';
-import { logout } from './api';    
+import { logout as apiLogout } from './api';    
 
 
 
@@ -9,12 +9,14 @@ import { logout } from './api';
 
 
 function Header() {
-    const {user} = useAuth();
+    const {user, logout} = useAuth();
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
-          await logout();
+          await apiLogout();
+          logout();  // 調用 AuthContext 的 logout 函數來清除本地狀態
           // 登出後重定向到首頁或登錄頁
+          navigate('/');
         } catch (error) {
           console.error('登出失敗:', error);
         }
