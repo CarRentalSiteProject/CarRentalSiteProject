@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import MainContent from './MainContent';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 import '@popperjs/core';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './Login';
+
 
 function App() {
   const [error, setError] = useState(null);
