@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,10 @@ import com.example.login.JWT.JwtService;
 import com.example.login.model.LoginRequest;
 import com.example.login.model.User;
 import com.example.login.service.UserService;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 
 // 標記這是一個控制器
 @RestController
@@ -56,12 +61,30 @@ public class SignupController {
 
     // 處理 POST 請求 "/signup"，處理用戶註冊
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody User signupRequest) {
+    public ResponseEntity<?> registerUser(@RequestBody User signupRequest, HttpServletResponse response) {
         try {
+
+            logger.info("Received signup request: {}", signupRequest);
             // 註冊新用戶
-            User user = userService.registerUser(signupRequest.getUsername(), signupRequest.getPassword());
+           // 註冊新用戶
+        User user = userService.registerUser(
+            signupRequest.getUsername(),
+            signupRequest.getPassword(),
+            signupRequest.getAge(),
+            signupRequest.getGender(),
+            signupRequest.getEmail(),
+            signupRequest.getLicenseNub(),
+            signupRequest.getAddress(),
+            signupRequest.getPhone()
+        );
             // 生成 JWT token
-            String token = jwtService.generateToken(new HashMap<>(), user);
+            String token = jwtService.generateToken(user, user.getUsername(), user.getEmailOrPhone());
+            //設置JWT token到cookie
+            Cookie cookie = new Cookie("jwt", token);
+            cookie.setPath("/");
+            cookie.setMaxAge(60*60);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
             return ResponseEntity.ok(new AuthResponse(token, user.getUsername()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -76,11 +99,11 @@ public class SignupController {
 
     // 處理 POST 請求 "/login"，處理用戶登錄
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        logger.info("Received login request for user: {}", loginRequest.getUsername());
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        logger.info("Received login request for user: {}", loginRequest.getemailOrphone());
         try {
             // 查找用戶
-            Optional<User> userOptional = userService.findByUsername(loginRequest.getUsername());
+            Optional<User> userOptional = userService.findByEmailOrPhone(loginRequest.getemailOrphone());
             if (userOptional.isEmpty()) {
                 return ResponseEntity.badRequest().body("登入失敗：用戶不存在");
             }
@@ -94,28 +117,36 @@ public class SignupController {
 
             // 進行認證
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(loginRequest.getemailOrphone(), loginRequest.getPassword())
             );
 
             // 生成 JWT token
-            String token = jwtService.generateToken(new HashMap<>(), user);
-            return ResponseEntity.ok(new AuthResponse(token, user.getUsername()));
+                String token = jwtService.generateToken(user, user.getUsername(),user.getEmailOrPhone());
+
+            //設置JWT token到cookie
+            Cookie cookie = new Cookie("jwt", token);
+            cookie.setPath("/");
+            cookie.setMaxAge(60*60);
+            response.addCookie(cookie);
+
+            // 直接從 token 中提取 username
+            String username = jwtService.extractUsername(token);
+
+            return ResponseEntity.ok(new AuthResponse(token, username));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("登入失敗：" + e.getMessage());
         }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestHeader("Authorization") String token) {
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7);
-            String username = jwtService.extractUsername(jwtToken);
-            userService.logoutUser(username);
-            jwtService.invalidateToken(jwtToken);
-            return ResponseEntity.ok().body("登出成功");
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return ResponseEntity.ok().body("登出成功");
     }
-    return ResponseEntity.badRequest().body("無效的 token");
-}
 
     // 處理 GET 請求 "/index"，返回首頁
     @GetMapping("/index")
@@ -142,11 +173,11 @@ public class SignupController {
             this.token = token;
             this.username = username;
         }
-    
+
         public String getToken() {
             return token;
         }
-        
+
         public String getUsername() {
             return username;
         }

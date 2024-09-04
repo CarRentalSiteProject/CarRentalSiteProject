@@ -26,6 +26,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import com.example.login.service.CustomUserDetailsService;
 
 import jakarta.servlet.DispatcherType;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 // 標記這是一個配置類
 @Configuration
@@ -86,16 +88,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/**", "/login", "/signup", "/index").permitAll()
-            .anyRequest().authenticated()
+        .requestMatchers( "/api/**", "/login", "/signup", "/index").permitAll()
+        .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
     return http.build();
     }
 

@@ -1,8 +1,8 @@
 package com.example.login.JWT;
 
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,47 +32,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        // 從請求頭中獲取 Authorization 字段
-        final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String userEmail;
+        final String emailOrphone;
 
-        // 如果 Authorization 頭不存在或不是 Bearer token，直接放行
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+        // 從 cookie 中獲取 JWT token
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwt".equals(cookie.getName())) {
+                    jwt = cookie.getValue();
+                    emailOrphone = jwtService.extractUsername(jwt);
 
-        // 提取 JWT token
-        jwt = authHeader.substring(7);
-        // 從 JWT 中提取用戶郵箱
-        userEmail = jwtService.extractUsername(jwt);
-
-        // 如果用戶郵箱存在且當前沒有認證信息
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // 加載用戶詳情
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            // 驗證 token 是否有效
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                // 創建認證 token
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                // 設置認證詳情
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                // 設置認證信息
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-            if (jwtService.isTokenBlacklisted(jwt)) {
-                filterChain.doFilter(request, response);
-                return;
+                    if (emailOrphone != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        UserDetails userDetails = this.userDetailsService.loadUserByUsername(emailOrphone);
+                        if (jwtService.isTokenValid(jwt, userDetails) && !jwtService.isTokenBlacklisted(jwt)) {
+                            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                            authToken.setDetails(
+                                    new WebAuthenticationDetailsSource().buildDetails(request)
+                            );
+                            SecurityContextHolder.getContext().setAuthentication(authToken);
+                        }
+                    }
+                    break;
+                }
             }
         }
-        // 繼續過濾鏈
+
         filterChain.doFilter(request, response);
     }
 }

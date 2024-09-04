@@ -29,23 +29,27 @@ public class JwtService {
     private static final String SECRET_KEY = "546A55A71347A254462D4A614E645267556B58703273357638792F423F452848";
 
     // 生成JWT令牌
-    public String generateToken(
-        Map<String, Object> extraClaims,
-        UserDetails userDetails
-    ) {
+    public String generateToken(UserDetails userDetails, String username, String emailOrphone) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("emailOrphone", emailOrphone);
         return Jwts
             .builder()
-            .setClaims(extraClaims)  // 設置額外的聲明
-            .setSubject(userDetails.getUsername()) // 以Username做為Subject
-            .setIssuedAt(new Date(System.currentTimeMillis()))  // 設置令牌簽發時間
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))  // 設置令牌過期時間
-            .signWith(getSignInKey(), SignatureAlgorithm.HS256)  // 使用HS256算法和密鑰進行簽名
-            .compact();  // 生成最終的JWT字符串
+            .setClaims(claims)
+            .setSubject(userDetails.getUsername())
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .compact();
     }
 
     // 從JWT中提取用戶名
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return (String) extractAllClaims(token).get("username");
+    }
+
+    public String extractEmailOrPhone(String token) {
+        return (String) extractAllClaims(token).get("emailOrphone");
     }
 
     // 從JWT中提取特定的聲明
