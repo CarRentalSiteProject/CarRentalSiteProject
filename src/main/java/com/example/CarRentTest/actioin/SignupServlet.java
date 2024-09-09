@@ -31,7 +31,7 @@ public class SignupServlet extends HttpServlet {
 	
     private static final long serialVersionUID = 1L;
 
-    private static final String INSERT_MEMBER_SQL = "INSERT INTO members (age, gender, name, email, licenseNub, address, phone , password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_MEMBER_SQL = "INSERT INTO members (age, gender, name, email, licenseNub, address, phone , password) VALUES (?, ?, ?, ?, ?, ?, ? , ?)";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -54,6 +54,13 @@ public class SignupServlet extends HttpServlet {
             member.getPassword()
         );
     }
+    
+    private static final String CHECK_EMAIL_PHONE_SQL = "SELECT COUNT(*) FROM members WHERE email = ? OR phone = ?";
+
+    public boolean isEmailOrPhoneExists(String email, String phone) {
+        Integer count = jdbcTemplate.queryForObject(CHECK_EMAIL_PHONE_SQL, new Object[]{email, phone}, Integer.class);
+        return count != null && count > 0;
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -72,6 +79,14 @@ public class SignupServlet extends HttpServlet {
             String address = request.getParameter("address");
             String phone = request.getParameter("phone");
             String password = request.getParameter("password");
+            
+         // 檢查 Email 或 Phone 是否已存在
+            if (isEmailOrPhoneExists(email, phone)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType("application/json; charset=UTF-8");
+                response.getWriter().write("{\"error\":\"您已註冊帳號\"}");
+                return;
+            }
 
             MemberVo member = new MemberVo();
             member.setAge(age);
