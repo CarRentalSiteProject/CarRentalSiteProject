@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CarRentTest.dao.loginMemberDao;
+import com.example.CarRentTest.vo.MemberVo;
 
 @RestController
 @RequestMapping("/api")
@@ -74,7 +75,10 @@ public class LoginAction {
 
         Map<String, Object> response = new HashMap<>();
         if (memberDao.validateLogin(name, password)) {
+        	// 查詢會員資訊
+            MemberVo member = memberDao.findByUsername(name);
             response.put("success", true);
+            response.put("memberInfo", member);
         } else {
             response.put("success", false);
             response.put("message", "Incorrect username or password");

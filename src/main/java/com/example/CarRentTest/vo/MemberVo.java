@@ -72,4 +72,14 @@ public void setLogin(Boolean login) {
 	this.login = login;
 }
 
+@Override
+public String toString() {
+	
+	// 決定使用 email 還是 phone 作為 Username 顯示
+    String username = (email != null && !email.isEmpty()) ? email : phone;
+	
+	return "MemberVo [MemberID=" + memberID + ", Username=" + username + ", Password=" + password
+			+ "]";
+}
+
 }
