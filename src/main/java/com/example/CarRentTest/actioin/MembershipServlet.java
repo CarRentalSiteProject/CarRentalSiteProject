@@ -41,6 +41,13 @@ public class MembershipServlet extends HttpServlet {
         } else { // 否則視為 phone
             member = jdbcTemplate.queryForMap(FETCH_MEMBER_BY_PHONE_SQL, username);
         }
+        
+        // 清理 `gender` 欄位中的不必要引號
+        if (member.get("gender") != null) {
+            String gender = member.get("gender").toString();
+            // 去除多餘的引號
+            member.put("gender", gender.replace("\"", ""));
+        }
 
         // 返回會員資料給前端，使用 JSON 格式
         response.setContentType("application/json");
