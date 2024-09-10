@@ -409,13 +409,16 @@ public class MyController {
     public Map<String, Object> questForOrderDetail(@RequestBody Map<String, String> request) {
         Integer odID = Integer.parseInt(request.get("od_ID"));
         System.out.println(odID);        
-        String sqlod = "SELECT Detail_ID FROM `order` WHERE OrderID like ?";
+        String sqlod = "SELECT * FROM `order` WHERE OrderID like ?";
         String sqloddetail = "SELECT * FROM order_detail WHERE Detail_ID = ?";
+        String sqlmb = "SELECT * FROM members WHERE memberID like ? AND login =1";
         
         Map<String, Object> response = new HashMap<>();
         try {
             Map<String, Object> selectedOrder = jdbcTemplate.queryForMap(sqlod, odID);
-            
+            int mdID = (int)selectedOrder.get("memberID");
+            Map<String, Object> mbData = jdbcTemplate.queryForMap(sqlmb, mdID);
+            String mbname = (String) mbData.get("name");
             // 檢查是否為 BigDecimal 並避免使用科學記數法
             BigDecimal detailID = (BigDecimal) selectedOrder.get("Detail_ID");
             if (detailID != null) {
@@ -427,7 +430,7 @@ public class MyController {
                 for (Map.Entry<String, Object> entry : selectedDetail.entrySet()) {
                     stringDetailMap.put(entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : null);
                 }
-
+                response.put("mbName", mbname);
                 response.put("orderDetail", stringDetailMap);
             } else {
                 response.put("error", "No Detail_ID found for the given order.");
