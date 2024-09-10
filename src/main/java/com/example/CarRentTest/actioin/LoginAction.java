@@ -43,7 +43,7 @@ public class LoginAction {
 	
 	@GetMapping("/login")
     public String loginForm(Model model) {
-        model.addAttribute("mes", "登入");
+        model.addAttribute("mes", "Login");
         return "Logintest";
     }
 
@@ -77,7 +77,7 @@ public class LoginAction {
             response.put("success", true);
         } else {
             response.put("success", false);
-            response.put("message", "帳號密碼錯誤");
+            response.put("message", "Incorrect username or password");
         }
         return response;
     }
