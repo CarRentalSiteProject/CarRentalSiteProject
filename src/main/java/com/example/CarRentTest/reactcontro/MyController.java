@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 
@@ -373,13 +374,28 @@ public class MyController {
     		String sqlmb = "SELECT * FROM members WHERE memberID like ? AND login =1";//得到用戶資料
     		String sqlod = "SELECT * FROM `order` WHERE MemberID like ?";
     		Map<String, Object> response = new HashMap<>();
+    		
     		try {
     	        Map<String, Object> mbData = jdbcTemplate.queryForMap(sqlmb, mbID);
     	        List<Map<String, Object>> odData = jdbcTemplate.queryForList(sqlod, mbID);
-    	        
+    	        List<Map<String, String>> stringOdData = new ArrayList<>();
+
+    	        for (Map<String, Object> map : odData) {
+    	            // 創建一個新的 Map 來存放轉換後的值
+    	            Map<String, String> stringMap = new HashMap<>();
+    	            for (Map.Entry<String, Object> entry : map.entrySet()) {
+    	                if (entry.getValue() instanceof BigDecimal) {
+    	                    stringMap.put(entry.getKey(), ((BigDecimal) entry.getValue()).toPlainString()); // 避免科學記數法
+    	                } else {
+    	                    stringMap.put(entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : null);
+    	                }
+    	            }
+    	            // 將轉換後的 Map 加入到結果列表中
+    	            stringOdData.add(stringMap);
+    	        }
     	        String mbname = (String) mbData.get("name");
     	        System.out.println(odData);
-    	        response.put("mbodData", odData);
+    	        response.put("mbodDataStr", stringOdData);
     	        response.put("mbName", mbname);
     	    } catch (EmptyResultDataAccessException e) {
     	        response.put("error", "No data found for the given MemberID");
@@ -390,24 +406,40 @@ public class MyController {
 
     
     @PostMapping("forOrderDetail")
-    public Map<String, Object> questForOrderDetail(@RequestBody Map<String, String> request){
-    	Integer odID = Integer.parseInt(request.get("od_ID"));
-    	System.out.println(odID);        
-        String sqlod = "SELECT Detail_ID FROM `order` WHERE OrderID  like ?";
+    public Map<String, Object> questForOrderDetail(@RequestBody Map<String, String> request) {
+        Integer odID = Integer.parseInt(request.get("od_ID"));
+        System.out.println(odID);        
+        String sqlod = "SELECT Detail_ID FROM `order` WHERE OrderID like ?";
         String sqloddetail = "SELECT * FROM order_detail WHERE Detail_ID = ?";
         
         Map<String, Object> response = new HashMap<>();
-        Map<String, Object> selectedOrder = jdbcTemplate.queryForMap(sqlod, odID);
-        BigDecimal detailID = (BigDecimal)selectedOrder.get("Detail_ID"); 
         try {
-            Map<String, Object> selectedDetail = jdbcTemplate.queryForMap(sqloddetail, detailID);
-            response.put("orderDetail", selectedDetail);
+            Map<String, Object> selectedOrder = jdbcTemplate.queryForMap(sqlod, odID);
             
+            // 檢查是否為 BigDecimal 並避免使用科學記數法
+            BigDecimal detailID = (BigDecimal) selectedOrder.get("Detail_ID");
+            if (detailID != null) {
+                String detailIDStr = detailID.toPlainString(); // 確保大數字的精度
+                Map<String, Object> selectedDetail = jdbcTemplate.queryForMap(sqloddetail, detailIDStr);
+
+                // 將 selectedDetail 轉換為字串
+                Map<String, String> stringDetailMap = new HashMap<>();
+                for (Map.Entry<String, Object> entry : selectedDetail.entrySet()) {
+                    stringDetailMap.put(entry.getKey(), entry.getValue() != null ? entry.getValue().toString() : null);
+                }
+
+                response.put("orderDetail", stringDetailMap);
+            } else {
+                response.put("error", "No Detail_ID found for the given order.");
+            }
+
         } catch (EmptyResultDataAccessException e) {
             response.put("error", "No order detail found for the given ID");
         }
+
         System.out.println(response);
         return response;
     }
+
  // 你可以在这里添加更多的API
 }

@@ -72,6 +72,7 @@ public void setLogin(Boolean login) {
 	this.login = login;
 }
 
+<<<<<<< HEAD
 @Override
 public String toString() {
 	
@@ -83,3 +84,6 @@ public String toString() {
 }
 
 }
+=======
+}
+>>>>>>> 220f89ebeab77998460cca10ea8f3b27048f12a5

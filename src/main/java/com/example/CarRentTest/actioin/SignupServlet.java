@@ -31,7 +31,7 @@ public class SignupServlet extends HttpServlet {
 	
     private static final long serialVersionUID = 1L;
 
-    private static final String INSERT_MEMBER_SQL = "INSERT INTO members (age, gender, name, email, licenseNub, address, phone , password) VALUES (?, ?, ?, ?, ?, ?, ? , ?)";
+    private static final String INSERT_MEMBER_SQL = "INSERT INTO member (age, gender, name, email, licenseNub, address, phone , password) VALUES (?, ?, ?, ?, ?, ?, ? , ?)";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -55,7 +55,7 @@ public class SignupServlet extends HttpServlet {
         );
     }
     
-    private static final String CHECK_EMAIL_PHONE_SQL = "SELECT COUNT(*) FROM members WHERE email = ? OR phone = ?";
+    private static final String CHECK_EMAIL_PHONE_SQL = "SELECT COUNT(*) FROM member WHERE email = ? OR phone = ?";
 
     public boolean isEmailOrPhoneExists(String email, String phone) {
         Integer count = jdbcTemplate.queryForObject(CHECK_EMAIL_PHONE_SQL, new Object[]{email, phone}, Integer.class);
