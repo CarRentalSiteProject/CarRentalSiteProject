@@ -12,7 +12,7 @@ public class loginMemberDao {
 
     public boolean validateLogin(String username, String password) {
         // String sql = "SELECT COUNT(*) FROM members WHERE (email = ? OR phone = ?) AND Password = ?";
-        String sql = "SELECT COUNT(*) FROM members WHERE name = ? AND password = ?";
+        String sql = "SELECT COUNT(*) FROM member1 WHERE name = ? AND password = ?";
         
         // 使用 JdbcTemplate 进行查询并获取匹配的行数
         //int count = jdbcTemplate.queryForObject(sql, new Object[]{username, password}, Integer.class);
