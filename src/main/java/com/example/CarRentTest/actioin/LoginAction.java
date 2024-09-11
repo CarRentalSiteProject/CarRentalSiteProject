@@ -19,15 +19,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
-import com.example.CarRentTest.dao.loginMemberDao;
-import com.example.CarRentTest.vo.MemberVo;
-=======
 import com.example.CarRentTest.JWT.JwtService;
 import com.example.CarRentTest.dao.LoginRequest;
 import com.example.CarRentTest.vo.User;
 import com.example.CarRentTest.Service.UserService;
->>>>>>> 220f89ebeab77998460cca10ea8f3b27048f12a5
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,17 +66,6 @@ public class LoginAction {
             }
             User user = userOptional.get();
 
-<<<<<<< HEAD
-        Map<String, Object> response = new HashMap<>();
-        if (memberDao.validateLogin(name, password)) {
-        	// 查詢會員資訊
-            MemberVo member = memberDao.findByUsername(name);
-            response.put("success", true);
-            response.put("memberInfo", member);
-        } else {
-            response.put("success", false);
-            response.put("message", "Incorrect username or password");
-=======
             // 驗證密碼
             if (!loginRequest.getPassword().equals(user.getPassword())) {
                 return ResponseEntity.badRequest().body("登入失敗：密碼不正確");
@@ -107,7 +91,6 @@ public class LoginAction {
             return ResponseEntity.ok(new AuthResponse(token, username));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("登入失敗：" + e.getMessage());
->>>>>>> 220f89ebeab77998460cca10ea8f3b27048f12a5
         }
     }
 
