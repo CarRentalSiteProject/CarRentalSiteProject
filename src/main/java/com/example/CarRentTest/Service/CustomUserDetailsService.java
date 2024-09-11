@@ -20,25 +20,27 @@ public class CustomUserDetailsService implements UserDetailsService{
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String emailOrphoneOrusername) throws UsernameNotFoundException {
-        logger.info("嘗試加載用戶：" + emailOrphoneOrusername);
-        User user = userRepository.findByEmail(emailOrphoneOrusername);
+    public UserDetails loadUserByUsername(String emailOrphoneOrname) throws UsernameNotFoundException {
+        logger.info("嘗試加載用戶：" + emailOrphoneOrname);
+        User user = userRepository.findByEmail(emailOrphoneOrname);
         
         if (user == null) {
             logger.info("通過電子郵件未找到用戶，嘗試通過電話號碼查找");
-            user = userRepository.findByPhone(emailOrphoneOrusername);
+            user = userRepository.findByPhone(emailOrphoneOrname);
         }
         if (user == null) {
-            user = userRepository.findByUsername(emailOrphoneOrusername);
+            user = userRepository.findByName(emailOrphoneOrname);
         }
         if(user == null){
-            logger.warn("用戶不存在：" + emailOrphoneOrusername);
-            throw new UsernameNotFoundException("用戶不存在：" + emailOrphoneOrusername);
+            logger.warn("用戶不存在：" + emailOrphoneOrname);
+            throw new UsernameNotFoundException("用戶不存在：" + emailOrphoneOrname);
         }
         
+        logger.info("用戶已找到：" + user.getUsername());
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
                 .password("{noop}" + user.getPassword())
                 .build();
+                
     }
 }

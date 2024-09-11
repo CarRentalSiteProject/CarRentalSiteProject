@@ -13,9 +13,9 @@ public class UserService {
      @Autowired
      private UserRepository userRepository;
 
-    //利用username作為登入帳號
-    public Optional<User> findByUsername(String username) {
-        return Optional.ofNullable(userRepository.findByUsername(username));
+    //利用name作為登入帳號
+    public Optional<User> findByName(String name) {
+        return Optional.ofNullable(userRepository.findByName(name));
     }
 
     //利用emailOrphone作為登入帳號
@@ -25,13 +25,13 @@ public class UserService {
         user = userRepository.findByPhone(emailOrphone);
        }
        if(user == null){
-        user = userRepository.findByUsername(emailOrphone);
+        user = userRepository.findByName(emailOrphone);
        }
        return Optional.ofNullable(user);
     }
 
-    public void logoutUser(String username) {
-        User user = userRepository.findByUsername(username);
+    public void logoutUser(String name) {
+        User user = userRepository.findByName(name);
         if (user != null) {
             userRepository.save(user);
         }
