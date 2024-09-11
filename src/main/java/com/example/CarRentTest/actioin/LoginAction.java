@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -110,6 +111,34 @@ public class LoginAction {
         return ResponseEntity.ok().build();
     }
 
+
+    @GetMapping("/checkLoginStatus")
+    public ResponseEntity<?> checkLoginStatus(@CookieValue(value = "jwt", defaultValue = "") String token) {
+        // 檢查 token 是否為空
+        if (token.isEmpty()) {
+            return ResponseEntity.status(401).body("未登入");
+        }
+
+        try {
+            // 從 token 中提取用戶名
+            String username = jwtService.extractUsername(token);
+            
+            // 從 UserService 獲取用戶信息
+            Optional<User> userOptional = userService.findByEmailOrPhone(username);
+            
+            // 檢查用戶是否存在且 token 是否有效
+            if (userOptional.isPresent() && jwtService.isTokenValid(token, userOptional.get())) {
+                // 用戶已登入且 token 有效
+                return ResponseEntity.ok().body("已登入");
+            } else {
+                // 用戶不存在或 token 無效
+                return ResponseEntity.status(401).body("未登入或登入已過期");
+            }
+        } catch (Exception e) {
+            // 處理任何可能發生的異常
+            return ResponseEntity.status(401).body("未登入或登入已過期");
+        }
+    }
 
     // 內部類，用於返回 JWT token 和用戶名
     private static class AuthResponse {

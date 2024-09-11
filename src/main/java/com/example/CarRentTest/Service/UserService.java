@@ -24,6 +24,9 @@ public class UserService {
        if(user == null){
         user = userRepository.findByPhone(emailOrphone);
        }
+       if(user == null){
+        user = userRepository.findByUsername(emailOrphone);
+       }
        return Optional.ofNullable(user);
     }
 
@@ -33,5 +36,6 @@ public class UserService {
             userRepository.save(user);
         }
     }
+
 }
 
