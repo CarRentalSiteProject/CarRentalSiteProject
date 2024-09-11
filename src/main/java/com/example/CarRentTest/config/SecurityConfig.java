@@ -83,7 +83,8 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-        .requestMatchers( "/api/login", "/api/signup", "/api/index", "/api/validate-token").permitAll()
+        .requestMatchers( "/api/login", "/api/signup", "/api/index", "/api/validate-token", "/signup").permitAll()
+        .requestMatchers("/carrent/searchPlace").authenticated()//需要登入的api
         .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

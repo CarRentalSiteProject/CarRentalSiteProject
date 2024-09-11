@@ -4,6 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -19,12 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-
-
 import ecpay.payment.integration.AllInOne;
 
 import jakarta.servlet.http.*;
@@ -38,9 +37,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Collections;
@@ -48,6 +44,7 @@ import java.util.Collections;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.example.CarRentTest.JWT.JwtService;
 
 @RestController
 @RequestMapping("/carrent")

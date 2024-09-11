@@ -9,7 +9,7 @@ import java.util.Collections;
 
 
 @Entity
-@Table(name = "member") // 假設你的數據庫表名為 "users"
+@Table(name = "members") // 假設你的數據庫表名為 "users"
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
