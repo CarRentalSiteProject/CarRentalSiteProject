@@ -32,3 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 /.apt_generated_tests/
+
+# 忽略特定文件
+src/main/resources/application.properties
