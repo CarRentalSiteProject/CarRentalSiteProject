@@ -13,7 +13,7 @@ import java.util.Collections;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int memberID;
 
     @Column(unique = true)
     private String username;
@@ -55,7 +55,7 @@ public class User implements UserDetails {
 
     // Getter 和 Setter 方法
     public int getId() {
-        return id;
+        return memberID;
     }
 
     @Override
