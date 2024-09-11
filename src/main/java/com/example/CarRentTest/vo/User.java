@@ -9,14 +9,14 @@ import java.util.Collections;
 
 
 @Entity
-@Table(name = "members") // 假設你的數據庫表名為 "users"
+@Table(name = "members") 
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int memberID;
 
     @Column(unique = true)
-    private String username;
+    private String name;
 
     @Column(nullable = false)
     private String password;
@@ -27,23 +27,27 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String gender;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "licenseNub", nullable = false)
     private String licenseNub;
 
     @Column(nullable = false)
     private String address;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
+    private Boolean login;
+
 
     // 構造函數
     public User() {}
 
-    public User(String username, String password,  int age, String gender, String email, String licenseNub, String address, String phone) {
-        this.username = username;
+    public User(String name, String password,  int age, String gender, String email, String licenseNub, String address, String phone) {
+        this.name = name;
         this.password = password;
         this.age = age;
         this.gender = gender;
@@ -54,17 +58,21 @@ public class User implements UserDetails {
     }
 
     // Getter 和 Setter 方法
+<<<<<<< HEAD
     public int getId() {
+=======
+    public int getMemberID() {
+>>>>>>> dfe84db7ac949c13e4df27adfbd2c23b40f0d5d7
         return memberID;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String name) {
+        this.name = name;
     }
 
     @Override
@@ -154,6 +162,13 @@ public class User implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Boolean getLogin() {
+        return login;
+    }
+    public void setLogin(Boolean login) {
+        this.login = login;
     }
 
     public String getEmailOrPhone() {
