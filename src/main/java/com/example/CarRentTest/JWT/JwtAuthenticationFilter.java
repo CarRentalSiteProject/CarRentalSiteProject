@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 用戶詳情服務
     private final UserDetailsService userDetailsService;
     
- // 構造函數，初始化 jwtService 和 userDetailsService
+    // 構造函數，初始化 jwtService 和 userDetailsService
     @Autowired
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
         this.jwtService = jwtService;

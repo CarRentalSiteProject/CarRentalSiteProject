@@ -11,6 +11,8 @@ public class CarVo {
 	int PeopleNub;
 	String Car_Status;
 	String C_Location;
+	float Rating;
+	String imgs;
 	public int getCarID() {
 		return CarID;
 	}
@@ -53,14 +55,31 @@ public class CarVo {
 	public void setC_Location(String c_Location) {
 		C_Location = c_Location;
 	}
-	public CarVo() {}
-	public CarVo (int carID,String carType,int price,Date date,int peopleNub,String car_Status,String c_Location) {
-		this.CarID=carID;
-		this.CarType=carType;
-		this.Price=price;
-		this.date=date;
-		this.PeopleNub=peopleNub;
-		this.Car_Status=car_Status;
-		this.C_Location=c_Location;
+	public float getRating() {
+		return Rating;
 	}
+	public void setRating(float rating) {
+		Rating = rating;
+	}
+	public String getImgs() {
+		return imgs;
+	}
+	public void setImgs(String imgs) {
+		this.imgs = imgs;
+	}
+	public CarVo() {}
+	public CarVo(int carID, String carType, int price, Date date, int peopleNub, String car_Status, String c_Location,
+			float rating, String imgs) {
+		super();
+		this.CarID = carID;
+		this.CarType = carType;
+		this.Price = price;
+		this.date = date;
+		this.PeopleNub = peopleNub;
+		this.Car_Status = car_Status;
+		this.C_Location = c_Location;
+		this.Rating = rating;
+		this.imgs = imgs;
+	}
+	
 }
