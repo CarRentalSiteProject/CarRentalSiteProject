@@ -16,25 +16,25 @@ import jakarta.persistence.Table;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int CarID;
+    private int carID;
 
     @Column(nullable = false)
-	String CarType;
+	String carType;
 
     @Column(nullable = false)
-	int Price;
+	int price;
 
     @Column
 	Date date;
 
     @Column(nullable = false)
-	int PeopleNub;
+	int peopleNub;
 
     @Column(nullable = false)
-	String Car_Status;
+	String car_Status;
 
     @Column(nullable = false)
-	String C_Location;
+	String c_Location;
 
     @Column
 	float Rating;
@@ -49,86 +49,86 @@ public class Car {
 	public Car(int carID, String carType, int price, Date date, int peopleNub, String car_Status, String c_Location,
 			float rating, String imgs) {
 		super();
-		this.CarID = carID;
-		this.CarType = carType;
-		this.Price = price;
+		this.carID = carID;
+		this.carType = carType;
+		this.price = price;
 		this.date = date;
-		this.PeopleNub = peopleNub;
-		this.Car_Status = car_Status;
-		this.C_Location = c_Location;
+		this.peopleNub = peopleNub;
+		this.car_Status = car_Status;
+		this.c_Location = c_Location;
 		this.Rating = rating;
 		this.imgs = imgs;
 	}
 
 	public float getRating() {
-		return Rating;
+		return this.Rating;
 	}
 
 	public void setRating(float rating) {
-		Rating = rating;
+		this.Rating = rating;
 	}
 
 	public String getImgs() {
-		return imgs;
+		return this.imgs;
 	}
 
 	public void setImgs(String imgs) {
 		this.imgs = imgs;
 	}
 
-	public int getCarID() {
-		return CarID;
+	public int getcarID() {
+		return this.carID;
 	}
 
-	public void setCarID(int carID) {
-		CarID = carID;
+	public void setcarID(int carID) {
+		this.carID = carID;
 	}
 
-	public String getCarType() {
-		return CarType;
+	public String getcarType() {
+		return this.carType;
 	}
 
-	public void setCarType(String carType) {
-		CarType = carType;
+	public void setcarType(String carType) {
+		this.carType = carType;
 	}
 
-	public int getPrice() {
-		return Price;
+	public int getprice() {
+		return this.price;
 	}
 
-	public void setPrice(int price) {
-		Price = price;
+	public void setprice(int price) {
+		this.price = price;
 	}
 
 	public Date getDate() {
-		return date;
+		return this.date;
 	}
 
 	public void setDate(Date date) {
 		this.date = date;
 	}
 
-	public int getPeopleNub() {
-		return PeopleNub;
+	public int getpeopleNub() {
+		return this.peopleNub;
 	}
 
-	public void setPeopleNub(int peopleNub) {
-		PeopleNub = peopleNub;
+	public void setpeopleNub(int peopleNub) {
+		this.peopleNub = peopleNub;
 	}
 
-	public String getCar_Status() {
-		return Car_Status;
+	public String getcar_Status() {
+		return this.car_Status;
 	}
 
-	public void setCar_Status(String car_Status) {
-		Car_Status = car_Status;
+	public void setcar_Status(String car_Status) {
+		this.car_Status = car_Status;
 	}
 
-	public String getC_Location() {
-		return C_Location;
+	public String getc_Location() {
+		return this.c_Location;
 	}
 
-	public void setC_Location(String c_Location) {
-		C_Location = c_Location;
+	public void setc_Location(String c_Location) {
+		this.c_Location = c_Location;
 	}
 }
