@@ -58,11 +58,7 @@ public class User implements UserDetails {
     }
 
     // Getter 和 Setter 方法
-<<<<<<< HEAD
-    public int getId() {
-=======
     public int getMemberID() {
->>>>>>> dfe84db7ac949c13e4df27adfbd2c23b40f0d5d7
         return memberID;
     }
 
