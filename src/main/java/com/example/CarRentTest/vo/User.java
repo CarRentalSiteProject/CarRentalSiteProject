@@ -22,7 +22,7 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = false)
-    private int age;
+    private Integer age;
 
     @Column(nullable = false)
     private String gender;
@@ -39,14 +39,13 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
-    private Boolean login;
+    
 
 
     // 構造函數
     public User() {}
 
-    public User(String name, String password,  int age, String gender, String email, String licenseNub, String address, String phone) {
+    public User(String name, String password,  Integer age, String gender, String email, String licenseNub, String address, String phone) {
         this.name = name;
         this.password = password;
         this.age = age;
@@ -112,11 +111,11 @@ public class User implements UserDetails {
 
     //signup
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
@@ -160,12 +159,7 @@ public class User implements UserDetails {
         this.phone = phone;
     }
 
-    public Boolean getLogin() {
-        return login;
-    }
-    public void setLogin(Boolean login) {
-        this.login = login;
-    }
+    
 
     public String getEmailOrPhone() {
         return email != null ? email : phone;

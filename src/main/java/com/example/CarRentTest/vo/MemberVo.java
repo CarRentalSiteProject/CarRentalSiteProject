@@ -10,7 +10,7 @@ String email;
 String licenseNub;
 String address;
 String phone;
-Boolean login;
+
 public int getMemberID() {
 	return memberID;
 }
@@ -65,12 +65,7 @@ public String getPhone() {
 public void setPhone(String phone) {
 	this.phone = phone;
 }
-public Boolean getLogin() {
-	return login;
-}
-public void setLogin(Boolean login) {
-	this.login = login;
-}
+
 
 
 

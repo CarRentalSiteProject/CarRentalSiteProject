@@ -105,6 +105,7 @@ public class SignupServlet extends HttpServlet {
             response.setContentType("application/json");
             response.getWriter().write("{\"message\":\"Signup successful\"}");
         } catch (Exception e) {
+        	e.printStackTrace();
             // 發生錯誤時返回狀態碼 400 並回傳錯誤訊息
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().write("{\"error\":\"Invalid input\"}");

@@ -2,6 +2,7 @@ package com.example.CarRentTest.actioin;
 
 // 導入必要的類和接口
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -139,6 +141,96 @@ public class LoginAction {
             return ResponseEntity.status(401).body("未登入或登入已過期");
         }
     }
+    
+    @GetMapping("/membership")
+    public ResponseEntity<?> getMembershipInfo(@RequestHeader(value = "Authorization", defaultValue = "") String authorizationHeader) {
+        // Extract token from "Bearer <token>" format
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : "";
+
+        if (token.isEmpty()) {
+            return ResponseEntity.status(401).body("未登入");
+        }
+
+        try {
+            // 從 token 中提取用戶名
+            String username = jwtService.extractUsername(token);
+            
+            // 從 UserService 獲取用戶信息
+            Optional<User> userOptional = userService.findByEmailOrPhone(username);
+            
+            // 檢查用戶是否存在且 token 是否有效
+            if (userOptional.isPresent() && jwtService.isTokenValid(token, userOptional.get())) {
+                // 返回會員資料
+                User user = userOptional.get();
+                return ResponseEntity.ok(Map.of(
+                    "name", user.getUsername(),
+                    "gender", user.getGender(),
+                    "address", user.getAddress(),
+                    "age", user.getAge()
+                ));
+            } else {
+                // 用戶不存在或 token 無效
+                return ResponseEntity.status(401).body("未登入或登入已過期");
+            }
+        } catch (Exception e) {
+            // 處理任何可能發生的異常
+            return ResponseEntity.status(401).body("未登入或登入已過期");
+        }
+    }
+    
+    @PutMapping("/updateinfo")
+    public ResponseEntity<?> updateMembershipInfo(
+            @RequestBody User userDto, 
+            @RequestHeader("Authorization") String authorizationHeader) {
+
+        // 從 "Bearer <token>" 格式中提取 token
+        String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : "";
+
+        if (token.isEmpty()) {
+            return ResponseEntity.status(401).body("未登入");
+        }
+
+        try {
+            // 從 token 中提取用戶名
+            String username = jwtService.extractUsername(token);
+            
+            // 從 UserService 獲取用戶信息
+            Optional<User> userOptional = userService.findByEmailOrPhone(username);
+            
+            if (userOptional.isPresent() && jwtService.isTokenValid(token, userOptional.get())) {
+                User existingUser = userOptional.get();
+
+                // 更新用戶信息時，檢查傳入的字段是否為 null
+                if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
+                    existingUser.setUsername(userDto.getUsername());
+                }
+
+                if (userDto.getAge() != null) {
+                    existingUser.setAge(userDto.getAge());
+                }
+
+                if (userDto.getGender() != null) {
+                    existingUser.setGender(userDto.getGender());
+                }
+
+                if (userDto.getAddress() != null) {
+                    existingUser.setAddress(userDto.getAddress());
+                }
+
+                // 保存更新後的用戶信息
+                userService.save(existingUser);
+                
+                return ResponseEntity.ok("用戶信息更新成功");
+            } else {
+                return ResponseEntity.status(401).body("未登入或登入已過期");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("更新用戶信息時發生錯誤");
+        }
+    }
+
+
+
 
     // 內部類，用於返回 JWT token 和用戶名
     private static class AuthResponse {

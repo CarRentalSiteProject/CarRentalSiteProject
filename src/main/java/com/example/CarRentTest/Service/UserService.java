@@ -36,6 +36,11 @@ public class UserService {
             userRepository.save(user);
         }
     }
+    
+    public User save(User user) {
+        // 將用戶對象保存到數據庫中並返回更新後的用戶對象
+        return userRepository.save(user);
+    }
 
 }
 
