@@ -36,19 +36,44 @@ public class Car {
     @Column(nullable = false)
 	String C_Location;
 
+    @Column
+	float Rating;
+
+    @Column
+	String imgs;
+
 	public Car() {
 		super();
 	}
 
-	public Car(int carID, String carType, int price, Date date, int peopleNub, String car_Status, String c_Location) {
+	public Car(int carID, String carType, int price, Date date, int peopleNub, String car_Status, String c_Location,
+			float rating, String imgs) {
 		super();
-		CarID = carID;
-		CarType = carType;
-		Price = price;
+		this.CarID = carID;
+		this.CarType = carType;
+		this.Price = price;
 		this.date = date;
-		PeopleNub = peopleNub;
-		Car_Status = car_Status;
-		C_Location = c_Location;
+		this.PeopleNub = peopleNub;
+		this.Car_Status = car_Status;
+		this.C_Location = c_Location;
+		this.Rating = rating;
+		this.imgs = imgs;
+	}
+
+	public float getRating() {
+		return Rating;
+	}
+
+	public void setRating(float rating) {
+		Rating = rating;
+	}
+
+	public String getImgs() {
+		return imgs;
+	}
+
+	public void setImgs(String imgs) {
+		this.imgs = imgs;
 	}
 
 	public int getCarID() {
