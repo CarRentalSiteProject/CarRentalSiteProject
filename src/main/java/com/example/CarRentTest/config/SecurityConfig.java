@@ -84,7 +84,7 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-        .requestMatchers( "/api/login", "/api/signup", "/api/index", "/api/validate-token", "/signup", "/api/membership","/api/updateinfo").permitAll()
+        .requestMatchers( "/api/login", "/api/logout", "/api/signup", "/api/index", "/api/validate-token", "/signup", "/api/membership","/api/updateinfo").permitAll()
         .requestMatchers("/carrent/searchPlace").authenticated()//需要登入的api
         .requestMatchers("/car/queryPage").authenticated()//需要登入的api
         .anyRequest().authenticated()

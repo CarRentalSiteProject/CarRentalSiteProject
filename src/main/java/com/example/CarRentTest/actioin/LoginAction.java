@@ -1,6 +1,6 @@
 package com.example.CarRentTest.actioin;
 
-// 導入必要的類和接口
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,64 +31,51 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 
-// 標記這是一個控制器
 @RestController
 @RequestMapping("/api")
 public class LoginAction {
 
-    // 創建日誌記錄器，用於記錄控制器的操作
     private static final Logger logger = LoggerFactory.getLogger(LoginAction.class);
 
-    // 注入用戶服務，用於處理用戶相關的業務邏輯
     @Autowired
     private UserService userService;
 
-    // 注入認證管理器，用於處理用戶認證
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    // 注入 JWT 服務，用於生成和驗證 JWT token
     @Autowired
     private JwtService jwtService;
 
-    // 處理 GET 請求 "/login"，返回登錄頁面
     @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    // 處理 POST 請求 "/login"，處理用戶登錄
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
-        logger.info("Received login request for user: {}", loginRequest.getemailOrphone());
+        logger.info("收到用戶登入請求：{}", loginRequest.getemailOrphone());
         try {
-            // 查找用戶
             Optional<User> userOptional = userService.findByEmailOrPhone(loginRequest.getemailOrphone());
             if (userOptional.isEmpty()) {
                 return ResponseEntity.badRequest().body("登入失敗：用戶不存在");
             }
             User user = userOptional.get();
 
-            // 驗證密碼
             if (!loginRequest.getPassword().equals(user.getPassword())) {
                 return ResponseEntity.badRequest().body("登入失敗：密碼不正確");
             }
 
-            // 進行認證
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getemailOrphone(), loginRequest.getPassword())
             );
 
-            // 生成 JWT token
             String token = jwtService.generateToken(user, user.getUsername(),user.getEmailOrPhone());
 
-            //設置JWT token到cookie
             Cookie cookie = new Cookie("jwt", token);
             cookie.setPath("/");
             cookie.setMaxAge(60*60);
             response.addCookie(cookie);
 
-            // 直接從 token 中提取 username
             String username = jwtService.extractUsername(token);
 
             return ResponseEntity.ok(new AuthResponse(token, username));
@@ -98,53 +85,54 @@ public class LoginAction {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("jwt", null);
-        cookie.setMaxAge(0);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-        return ResponseEntity.ok().body("登出成功");
-    }
-    // 處理 GET 請求 "/api/validate-token"，驗證 JWT token
-    @GetMapping("/api/validate-token")
-    public ResponseEntity<?> validateToken() {
-        // 如果請求能到達這裡，說明 JWT 過濾器已經驗證了 token
-        return ResponseEntity.ok().build();
-    }
+    public ResponseEntity<?> logout(@CookieValue(value = "jwt", defaultValue = "") String token, HttpServletResponse response) {
+        if (!token.isEmpty()) {
+            try {
+                String username = jwtService.extractUsername(token);
+                Optional<User> userOptional = userService.findByEmailOrPhone(username);
 
+                if (userOptional.isPresent() && jwtService.isTokenValid(token, userOptional.get())) {
+                    Cookie cookie = new Cookie("jwt", null);
+                    cookie.setMaxAge(0);
+                    cookie.setHttpOnly(true);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                    return ResponseEntity.ok().body("登出成功");
+                }
+            } catch (Exception e) {
+                Cookie cookie = new Cookie("jwt", null);
+                cookie.setMaxAge(0);
+                cookie.setHttpOnly(true);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+                return ResponseEntity.ok().body("登出成功");
+            }
+        }
+        return ResponseEntity.status(401).body("未登入");
+    }
 
     @GetMapping("/checkLoginStatus")
     public ResponseEntity<?> checkLoginStatus(@CookieValue(value = "jwt", defaultValue = "") String token) {
-        // 檢查 token 是否為空
         if (token.isEmpty()) {
             return ResponseEntity.status(401).body("未登入");
         }
 
         try {
-            // 從 token 中提取用戶名
             String username = jwtService.extractUsername(token);
-            
-            // 從 UserService 獲取用戶信息
             Optional<User> userOptional = userService.findByEmailOrPhone(username);
-            
-            // 檢查用戶是否存在且 token 是否有效
+
             if (userOptional.isPresent() && jwtService.isTokenValid(token, userOptional.get())) {
-                // 用戶已登入且 token 有效
                 return ResponseEntity.ok().body("已登入");
             } else {
-                // 用戶不存在或 token 無效
                 return ResponseEntity.status(401).body("未登入或登入已過期");
             }
         } catch (Exception e) {
-            // 處理任何可能發生的異常
             return ResponseEntity.status(401).body("未登入或登入已過期");
         }
     }
-    
+
     @GetMapping("/membership")
     public ResponseEntity<?> getMembershipInfo(@RequestHeader(value = "Authorization", defaultValue = "") String authorizationHeader) {
-        // Extract token from "Bearer <token>" format
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : "";
 
         if (token.isEmpty()) {
@@ -152,15 +140,10 @@ public class LoginAction {
         }
 
         try {
-            // 從 token 中提取用戶名
             String username = jwtService.extractUsername(token);
-            
-            // 從 UserService 獲取用戶信息
             Optional<User> userOptional = userService.findByEmailOrPhone(username);
-            
-            // 檢查用戶是否存在且 token 是否有效
+
             if (userOptional.isPresent() && jwtService.isTokenValid(token, userOptional.get())) {
-                // 返回會員資料
                 User user = userOptional.get();
                 return ResponseEntity.ok(Map.of(
                     "name", user.getUsername(),
@@ -169,21 +152,19 @@ public class LoginAction {
                     "age", user.getAge()
                 ));
             } else {
-                // 用戶不存在或 token 無效
                 return ResponseEntity.status(401).body("未登入或登入已過期");
             }
         } catch (Exception e) {
-            // 處理任何可能發生的異常
             return ResponseEntity.status(401).body("未登入或登入已過期");
         }
     }
-    
+
     @PutMapping("/updateinfo")
     public ResponseEntity<?> updateMembershipInfo(
             @RequestBody User userDto, 
-            @RequestHeader("Authorization") String authorizationHeader) {
+            @RequestHeader("Authorization") String authorizationHeader,
+            HttpServletResponse response) {
 
-        // 從 "Bearer <token>" 格式中提取 token
         String token = authorizationHeader.startsWith("Bearer ") ? authorizationHeader.substring(7) : "";
 
         if (token.isEmpty()) {
@@ -191,48 +172,62 @@ public class LoginAction {
         }
 
         try {
-            // 從 token 中提取用戶名
             String username = jwtService.extractUsername(token);
-            
-            // 從 UserService 獲取用戶信息
             Optional<User> userOptional = userService.findByEmailOrPhone(username);
-            
+
             if (userOptional.isPresent() && jwtService.isTokenValid(token, userOptional.get())) {
                 User existingUser = userOptional.get();
 
-                // 更新用戶信息時，檢查傳入的字段是否為 null
-                if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
-                    existingUser.setUsername(userDto.getUsername());
-                }
+                boolean isUsernameUpdated = !existingUser.getUsername().equals(userDto.getUsername());
 
-                if (userDto.getAge() != null) {
-                    existingUser.setAge(userDto.getAge());
-                }
-
-                if (userDto.getGender() != null) {
-                    existingUser.setGender(userDto.getGender());
-                }
-
-                if (userDto.getAddress() != null) {
-                    existingUser.setAddress(userDto.getAddress());
-                }
-
-                // 保存更新後的用戶信息
+                updateUserFields(existingUser, userDto);
                 userService.save(existingUser);
                 
-                return ResponseEntity.ok("用戶信息更新成功");
+                // 清除舊的 cookie
+                Cookie oldCookie = new Cookie("jwt", null);
+                oldCookie.setMaxAge(0);
+                oldCookie.setHttpOnly(true);
+                oldCookie.setPath("/");
+                response.addCookie(oldCookie);
+
+                // 生成新的 JWT token
+                String newToken = jwtService.generateToken(existingUser, existingUser.getUsername(), existingUser.getEmailOrPhone());
+                Cookie newCookie = new Cookie("jwt", newToken);
+                newCookie.setPath("/");
+                newCookie.setMaxAge(60 * 60); // 1 hour
+                response.addCookie(newCookie);
+
+                if (isUsernameUpdated) {
+                    return ResponseEntity.ok(Collections.singletonMap("logoutRequired", true));
+                } else {
+                    return ResponseEntity.ok(Collections.singletonMap("logoutRequired", false));
+                }
             } else {
                 return ResponseEntity.status(401).body("未登入或登入已過期");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("更新用戶信息時發生錯誤");
+            return ResponseEntity.status(500).body("更新用戶資料時發生錯誤");
         }
     }
 
+    private void updateUserFields(User existingUser, User userDto) {
+        if (userDto.getUsername() != null && !userDto.getUsername().isEmpty()) {
+            existingUser.setUsername(userDto.getUsername());
+        }
 
+        if (userDto.getAge() != null) {
+            existingUser.setAge(userDto.getAge());
+        }
 
+        if (userDto.getGender() != null) {
+            existingUser.setGender(userDto.getGender());
+        }
 
-    // 內部類，用於返回 JWT token 和用戶名
+        if (userDto.getAddress() != null) {
+            existingUser.setAddress(userDto.getAddress());
+        }
+    }
+
     private static class AuthResponse {
         private String token;
         private String username;
@@ -251,4 +246,3 @@ public class LoginAction {
         }
     }
 }
-
