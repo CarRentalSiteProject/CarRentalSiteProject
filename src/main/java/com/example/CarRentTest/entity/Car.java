@@ -25,7 +25,7 @@ public class Car {
 	int price;
 
     @Column
-	Date date;
+	String date;
 
     @Column(nullable = false)
 	int peopleNub;
@@ -46,7 +46,7 @@ public class Car {
 		super();
 	}
 
-	public Car(int carID, String carType, int price, Date date, int peopleNub, String car_Status, String c_Location,
+	public Car(int carID, String carType, int price, String date, int peopleNub, String car_Status, String c_Location,
 			float rating, String imgs) {
 		super();
 		this.carID = carID;
@@ -100,11 +100,11 @@ public class Car {
 		this.price = price;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return this.date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
