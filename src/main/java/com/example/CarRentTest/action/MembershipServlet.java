@@ -1,4 +1,4 @@
-package com.example.CarRentTest.actioin;
+package com.example.CarRentTest.action;
 
 import java.io.IOException;
 import java.util.Map;
