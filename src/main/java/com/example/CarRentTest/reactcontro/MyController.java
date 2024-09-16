@@ -53,6 +53,8 @@ public class MyController {
 	private AllInOne allInOne;
 	@Autowired
     private JdbcTemplate jdbcTemplate;
+	@Autowired
+    private JwtService jwtService;
 	
 	@Autowired
     public MyController() {
@@ -64,7 +66,7 @@ public class MyController {
         return "API連接成功";
     }
 
-    @PostMapping("/searchPlace")
+    @PostMapping("/searchPlace2")
     public List<Map<String, Object>> searchPlace(@RequestBody Map<String, String> request) {
         String chplace = request.get("chplace");
         String chdate = request.get("chdate");
@@ -271,7 +273,25 @@ public class MyController {
 		        Integer carId = Integer.parseInt(carIdst);//轉換carID
 		        BigDecimal odnub = new BigDecimal(mcTradeNO);//轉換訂單編號
 		        Integer finprice = Integer.parseInt(tradeprice);//轉換金額
-		        int memberID=2;//假設客戶ID
+		        String token = (String)odmsgMap.get("tokenlocal");//token轉換
+	    		
+	            String emailOrPhone = jwtService.extractEmailOrPhone(token);
+	            String sqlmbp = "SELECT memberID FROM members WHERE phone like ?";
+	            String sqlmbe = "SELECT memberID FROM members WHERE email like ?";
+	            String memberIdStr;
+
+	         // 判斷是 email 還是 phone
+	         if (emailOrPhone.contains("@")) {
+	             // 是 email
+	        	 memberIdStr = jdbcTemplate.queryForObject(sqlmbe, new Object[]{"%" + emailOrPhone + "%"}, String.class);
+	         } else {
+	             // 是 phone
+	        	 memberIdStr = jdbcTemplate.queryForObject(sqlmbp, new Object[]{"%" + emailOrPhone + "%"}, String.class);
+	         }
+	            
+	    		Integer memberID = Integer.parseInt(memberIdStr);
+	    		System.out.println("MemberID = "+memberID);
+		        //int memberID=2;//假設客戶ID
 		        
 		        DateTimeFormatter formatreq = DateTimeFormatter.ofPattern("yyyy-MM-dd");//日期轉換格式並計算所需數值
 		        LocalDate chdate = LocalDate.parse(chdateStr, formatreq);
@@ -366,9 +386,29 @@ public class MyController {
 
     @PostMapping("forOrder")
     public Map<String, Object> questForOrder(@RequestBody Map<String, String> request){
-    		Integer mbID = Integer.parseInt(request.get("memberID"));
+    	String token = request.get("token");//token轉換
+		if (token == null || token.isEmpty()) {
+			Map<String, Object> responsefail = new HashMap<>();
+			responsefail.put("msg :","未接收token");
+            return responsefail;
+        }            
+        String emailOrPhone = jwtService.extractEmailOrPhone(token);
+        String sqlmbp = "SELECT memberID FROM members WHERE phone like ?";
+        String sqlmbe = "SELECT memberID FROM members WHERE email like ?";
+        String memberId;
+
+     // 判斷是 email 還是 phone
+     if (emailOrPhone.contains("@")) {
+         // 是 email
+         memberId = jdbcTemplate.queryForObject(sqlmbe, new Object[]{"%" + emailOrPhone + "%"}, String.class);
+     } else {
+         // 是 phone
+         memberId = jdbcTemplate.queryForObject(sqlmbp, new Object[]{"%" + emailOrPhone + "%"}, String.class);
+     }
+        
+		Integer mbID = Integer.parseInt(memberId);
     		System.out.println("MemberID = "+mbID);
-    		String sqlmb = "SELECT * FROM members WHERE memberID like ? AND login =1";//得到用戶資料
+    		String sqlmb = "SELECT * FROM members WHERE memberID like ?";//得到用戶資料
     		String sqlod = "SELECT * FROM `order` WHERE MemberID like ?";
     		Map<String, Object> response = new HashMap<>();
     		
@@ -408,7 +448,7 @@ public class MyController {
         System.out.println(odID);        
         String sqlod = "SELECT * FROM `order` WHERE OrderID like ?";
         String sqloddetail = "SELECT * FROM order_detail WHERE Detail_ID = ?";
-        String sqlmb = "SELECT * FROM members WHERE memberID like ? AND login =1";
+        String sqlmb = "SELECT * FROM members WHERE memberID like ?";
         
         Map<String, Object> response = new HashMap<>();
         try {

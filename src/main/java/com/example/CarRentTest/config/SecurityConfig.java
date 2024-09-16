@@ -87,6 +87,15 @@ public class SecurityConfig {
         .requestMatchers( "/api/login", "/api/logout", "/api/signup", "/api/index", "/api/validate-token", "/signup", "/api/membership","/api/updateinfo").permitAll()
         .requestMatchers("/carrent/searchPlace").authenticated()//需要登入的api
         .requestMatchers("/car/queryPage").authenticated()//需要登入的api
+        
+        .requestMatchers("/carrent/searchPlace2").authenticated()//測試用
+        
+        .requestMatchers("/carrent/order2").authenticated()
+        .requestMatchers("/carrent/payment").authenticated()
+        .requestMatchers("/carrent/paymentResult").authenticated()
+        .requestMatchers("/carrent/paymentResultPage").authenticated()
+        .requestMatchers("/carrent/forOrder").authenticated()
+        .requestMatchers("/carrent/forOrderDetail").authenticated()
         .anyRequest().authenticated()
         )
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
