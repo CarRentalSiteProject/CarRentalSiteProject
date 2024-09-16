@@ -30,58 +30,58 @@ function App() {
   const { checkAuth } = useAuth();
 
   useEffect(() => {
-    checkAuth();
+  checkAuth();
   }, []);
 
   useEffect(() => {
-    axios.get(baseUrl)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch(error => {
-        setError(error);
-      });
+  axios.get(baseUrl)
+    .then((response) => {
+    console.log(response);
+    })
+    .catch(error => {
+    setError(error);
+    });
   }, [baseUrl]);
 
   if (error) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        Error: {error.message}
-      </div>
-    );
+  return (
+    <div className="alert alert-danger" role="alert">
+    Error: {error.message}
+    </div>
+  );
   }
 
   return (
-    <div>
-      <Router>
-        <Header />
-        <Routes>
-          <Route path="/" element={<MainContent />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="login" element={<Login />} />
-          <Route path="index" element={<MainContent />} />
-          <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
-          <Route path="/rentOrder" element={<RentOrder />} /> 
-          <Route path="/fleets" element={<Fleets />} />
-          <Route path="/updateinfo" element={<UpdateInfo />} />
-          <Route path="/membership" element={<ProtectedRoute><Membership /></ProtectedRoute>} /> 
-          <Route path="/carrent/paymentResultPage" element={<PaymentResultPage/>} />
-          <Route path="/carrent/paymentResult" element={<PaymentResult/>} />
-          <Route path="/forOrder" element={<ForOrder/>} />
-          <Route path="/forOrderDetail" element={<ForOrderDetail/>} />
-          {/* Add more routes as needed */}
-        </Routes>
-        <Footer />
-      </Router>
-    </div>
+  <div>
+    <Router>
+    <Header />
+    <Routes>
+      <Route path="/" element={<MainContent />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="login" element={<Login />} />
+      <Route path="index" element={<MainContent />} />
+      <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+      <Route path="/rentOrder" element={<RentOrder />} /> 
+      <Route path="/fleets" element={<Fleets />} />
+      <Route path="/updateinfo" element={<UpdateInfo />} />
+      <Route path="/membership" element={<ProtectedRoute><Membership /></ProtectedRoute>} /> 
+      <Route path="/carrent/paymentResultPage" element={<PaymentResultPage/>} />
+      <Route path="/carrent/paymentResult" element={<PaymentResult/>} />
+      <Route path="/forOrder" element={<ForOrder/>} />
+      <Route path="/forOrderDetail" element={<ForOrderDetail/>} />
+      {/* Add more routes as needed */}
+    </Routes>
+    <Footer />
+    </Router>
+  </div>
   );
 }
 
 function AppWrapper() {
   return (
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+  <AuthProvider>
+    <App />
+  </AuthProvider>
   );
 }
 

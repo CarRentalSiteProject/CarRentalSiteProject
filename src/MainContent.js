@@ -7,15 +7,15 @@ import Comments from './Comments';
 import Mobile from './Mobile';
 
 function MainContent() {
-    return (
-        <main>
-            <SearchEmbeded />
-            <Intro />
-            <TopCars />
-            <Fleets />
-            <Comments />
-        </main>
-    );
+  return (
+    <main>
+      <SearchEmbeded />
+      <Intro />
+      <TopCars />
+      <Fleets />
+      <Comments />
+    </main>
+  );
 }
 
 export default MainContent;
