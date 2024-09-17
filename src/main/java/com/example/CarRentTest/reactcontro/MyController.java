@@ -78,7 +78,11 @@ public class MyController {
     
     @PostMapping("/order2")//方法1
     public Map<String, Object> processOrder2(@RequestBody Map<String, String> request) {
-        Integer selectedCarId = Integer.parseInt(request.get("selectedCar"));
+    	String selectedCarStr = request.get("selectedCar");
+    	if (selectedCarStr == null || selectedCarStr.isEmpty()) {
+    	    throw new IllegalArgumentException("Car ID is missing");
+    	}
+    	Integer selectedCarId = Integer.parseInt(selectedCarStr);
         String chdate = request.get("chdate");
         String redate = request.get("redate");
 
