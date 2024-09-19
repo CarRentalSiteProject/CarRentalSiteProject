@@ -17,18 +17,8 @@
 ```bash=
 git clone https://github.com/CarRentalSiteProject/CarRentalSiteProject.git
 ```
-2. 需透過npm安裝套件
-```bash=
-npm i react-scripts
-npm i react-dom
-npm i react-router-dom
-npm i popper.js
-npm i @popperjs/core
-npm i bootstrap@5
-npm i axios
-```
-3. application.properties中更改資料庫名稱
+2. application.properties中更改資料庫名稱
 ```bash=
 spring.datasource.url=jdbc:mysql://localhost:3306/database_name
 ```
-4. 執行CarRentTestApplication.java
+3. 執行CarRentTestApplication.java
