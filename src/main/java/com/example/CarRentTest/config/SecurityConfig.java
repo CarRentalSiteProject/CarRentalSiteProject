@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -84,7 +85,10 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-        .requestMatchers( "/api/login", "/api/logout", "/api/signup", "/api/index", "/api/validate-token", "/signup", "/api/membership","/api/updateinfo").permitAll()
+        .requestMatchers( "/api/login", "/api/logout", "/api/signup", "/api/index", "/api/validate-token", "/signup", "/api/membership","/api/updateinfo","/carrent/paymentResult","/bank/paymentcenter/cnt/twqr/**","/carrent/forOrder?**").permitAll()
+        //.requestMatchers(HttpMethod.POST, "/carrent/paymentResult").permitAll()
+        //.requestMatchers(HttpMethod.GET, "/carrent/paymentResult").permitAll()
+        .requestMatchers("/external-api/**").permitAll() // 新增這行來允許外部 API 的回調
         .requestMatchers("/carrent/searchPlace").authenticated()//需要登入的api
         .requestMatchers("/car/queryPage").authenticated()//需要登入的api
         
@@ -92,8 +96,7 @@ public class SecurityConfig {
         
         .requestMatchers("/carrent/order2").authenticated()
         .requestMatchers("/carrent/payment").authenticated()
-        .requestMatchers("/carrent/paymentResult").authenticated()
-        .requestMatchers("/carrent/paymentResultPage").authenticated()
+        //.requestMatchers("/carrent/paymentResult").authenticated()
         .requestMatchers("/carrent/forOrder").authenticated()
         .requestMatchers("/carrent/forOrderDetail").authenticated()
         .anyRequest().authenticated()
@@ -107,7 +110,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080")); // React 應用的 URL
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8080","https://payment-stage.ecpay.com")); // React 應用的 URL
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
